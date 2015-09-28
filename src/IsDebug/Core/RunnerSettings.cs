@@ -9,7 +9,7 @@ namespace IsDebug.Core
 
         public RunnerSettings()
         {
-            this.Recursive = true;
+            this.Recursive = false;
             this.StartPaths = new string[] { Environment.CurrentDirectory };
         }
     }
