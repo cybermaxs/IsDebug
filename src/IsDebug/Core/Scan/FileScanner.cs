@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace IsDebug.Core.Scan
 {
@@ -17,6 +18,9 @@ namespace IsDebug.Core.Scan
         
         public IEnumerable<string> Scan(string startPath)
         {
+            if (!Directory.Exists(startPath))
+                return Enumerable.Empty<string>();
+
             return Directory.EnumerateFiles(startPath, "*.dll", recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
         }
     }

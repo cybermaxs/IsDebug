@@ -29,8 +29,12 @@ namespace IsDebug.Core
                     string errorMessage;
                     if ((errorMessage = AssemblyUtils.Load(path, out assembly)) == string.Empty)
                     {
-                        var isdebugResult = AssemblyUtils.IsDebug(assembly);
-                        results.Ok(path, isdebugResult);
+                        IsDebugResult isdebugResult;
+                        string debugerror = string.Empty;
+                        if ((debugerror = AssemblyUtils.TryIsDebug(assembly, out isdebugResult)) == string.Empty)
+                         results.Ok(path, isdebugResult);
+                        else
+                            results.Fail(errorMessage);
                     }
                     else
                         results.Fail(errorMessage);

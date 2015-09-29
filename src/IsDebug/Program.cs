@@ -1,4 +1,5 @@
 ﻿using IsDebug.Core;
+using IsDebug.Core.Report;
 using Mono.Options;
 using System;
 using System.Collections.Generic;
@@ -42,33 +43,9 @@ namespace IsDebug
             var runner = new Runner(runnerSettings);
             var runnerResult = runner.Run();
 
-            if(runnerResult.OverralSuccess)
-            {
-                Console.ForegroundColor = ConsoleColor.DarkGreen;
-                Console.WriteLine("Status {0}, Analyzed {1} assemblies", "OK", runnerResult.TotalFiles);
-                Console.ResetColor();
-            }
-                
-            else
-            {
-                Console.ForegroundColor = ConsoleColor.DarkRed;
-                Console.WriteLine("Status {0}, Analyzed {1} assemblies (Debug : {2}, Release : {3}, Errors : {4})", "KO", runnerResult.TotalFiles, runnerResult.TotalDebug, runnerResult.TotalRelease, runnerResult.Errors.Count);
-                Console.ResetColor();
-            }
+            var reporter = !displayDetails ? new BasicConsoleReporter() : new DetailedConsoleReporter();
 
-            if (displayDetails)
-            {
-                //print results
-                foreach (var r in runnerResult.ScanResults)
-                {
-                    Console.WriteLine("{0} (HasDebuggableAttribute :'{1}', IsJITOptimized : '{2}', DebugOutput : '{3}')", r.Key, r.Value.HasDebuggableAttribute, r.Value.IsJITOptimized, r.Value.DebugOutput);
-                }
-
-                Console.ForegroundColor = ConsoleColor.Red;
-                foreach (var msg in runnerResult.Errors)
-                    Console.WriteLine(msg);
-                Console.ResetColor();
-            }
+            reporter.Generate(runnerResult);
 
             if (Debugger.IsAttached)
                 Console.ReadKey();

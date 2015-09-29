@@ -27,13 +27,13 @@ namespace IsDebug.Utils
             {
                 assembly = Assembly.LoadFrom(assemblyPath);
             }
-            catch(FileLoadException fex)
+            catch (FileLoadException fex)
             {
-                return string.Format("Could not load {0}. Reason : {1}", assemblyPath, fex);
+                return string.Format("Could not load {0}. Reason : {1}", assemblyPath, fex.Message);
             }
             catch (BadImageFormatException biex)
             {
-                return string.Format("Could not load {0}. Reason :{1}", assemblyPath, biex);
+                return string.Format("Could not load {0}. Reason :{1}", assemblyPath, biex.Message);
             }
 
             return string.Empty;
@@ -44,14 +44,20 @@ namespace IsDebug.Utils
         /// </summary>
         /// <param name="assembly">Assembly to test</param>
         /// <returns>IsDebugResult instance.</returns>
-        public static IsDebugResult IsDebug(Assembly assembly)
+        public static string TryIsDebug(Assembly assembly, out IsDebugResult result)
         {
             if (assembly == null) throw new ArgumentNullException(nameof(assembly));
 
-            var result = new IsDebugResult();
-
-            var attribs = assembly.GetCustomAttributes(typeof(DebuggableAttribute), false);
-
+            result = new IsDebugResult();
+            object[] attribs;
+            try
+            {
+                attribs = assembly.GetCustomAttributes(typeof(DebuggableAttribute), false);
+            }
+            catch (FileNotFoundException fne)
+            {
+                return string.Format("Could not load {0} from . Reason : {1}", fne.FileName, assembly.FullName);
+            }
             // If the 'DebuggableAttribute' is not found then it is definitely an OPTIMIZED build
             if (attribs.Length > 0)
             {
@@ -75,7 +81,7 @@ namespace IsDebug.Utils
                 result.IsJITOptimized = true;
             }
 
-            return result;
+            return string.Empty;
         }
     }
 }
