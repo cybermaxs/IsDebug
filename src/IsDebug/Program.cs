@@ -34,7 +34,7 @@ namespace IsDebug
                 return -1;
             }
 
-            if (showHelp || runnerSettings.StartPaths==null || runnerSettings.StartPaths.Length==0)
+            if (showHelp)
             {
                 ShowHelp(options);
                 return 0;
