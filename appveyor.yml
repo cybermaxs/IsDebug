@@ -11,6 +11,6 @@ before_build:
 build:
   verbosity: minimal
 deploy:
-- provider: GitHub
-auth_token:
+  provider: GitHub
+  auth_token:
     secure: lBtYei2XwIlzt9TMhyP8cmDleas5+/qQzT1AXqtGQb7+F6L/9Z+ubzQGykGPx4yB
