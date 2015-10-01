@@ -10,7 +10,13 @@ before_build:
 - nuget restore
 build:
   verbosity: minimal
+on:
+  branch: master                 # release from master branch only
+  appveyor_repo_tag: true        # deploy on tag push only
+artifacts:
+  path: '*.exe'
 deploy:
   provider: GitHub
   auth_token:
     secure: lBtYei2XwIlzt9TMhyP8cmDleas5+/qQzT1AXqtGQb7+F6L/9Z+ubzQGykGPx4yB
+
